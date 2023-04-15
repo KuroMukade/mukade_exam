@@ -3,7 +3,21 @@
   object-fit: cover;
 }
 
+.priceWrapper {
+  display: flex;
+  gap: 12px;
+}
+
+.lastPrice {
+  text-decoration: line-through;
+}
+
+.newPrice {
+  font-weight: bold;
+}
+
 .wrapper {
+  cursor: pointer;
   border-radius: 16px;
   padding: 12px 16px;
   max-width: 350px;

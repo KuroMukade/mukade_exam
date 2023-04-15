@@ -1,19 +1,44 @@
-import React, { useEffect } from 'react'
+import React, { FC } from 'react'
 import { useParams } from 'react-router-dom'
-import Card from '../../components/Card/Card';
-import { useGetRequestsById } from '../../api/endpoints/requests/get/getRequests';
+import { useGetProductsById } from '../../api/endpoints/products/get/getProducts';
+import { getDiscountPrice } from '../../utils/getDiscountPrice';
 
-const Product = () => {
+import styles from './Product.module.css';
+
+const Product: FC = () => {
   const params = useParams();
+  const product = useGetProductsById({id: params.id!})
 
-  const product = useGetRequestsById({id: '1'})
-
-  useEffect(() => {
-    console.log(product)
-  }, [])
+  if (product.isError) {
+    return (
+      <div>Произошла ошибка! Обратитесь к администрации сайта</div>
+    )
+  }  
 
   return (
-    <Card id={0} name={''} content={''} price={0} image_url={''} discount_percent={0} />
+    <div>
+      <div className={styles.wrapper}>
+        {product.isLoading && 'Data is loading...'}
+        {product.isSuccess && (
+          <div className={styles.card}>
+            <div className={styles.left}>
+              <h1 className={styles.title}>{product.data.data.data.name}</h1>
+              <img className={styles.img} src={product.data.data.data.preview_image} />
+            </div>
+            <div className={styles.right}>
+              <p className={styles.content}>{product.data.data.data.text}</p>
+              <div className={styles.saleWrapper}>
+                <p className={styles.price}>{product.data.data.data.price}</p>
+                <p className={styles.sale}>
+                  {getDiscountPrice(product.data.data.data.price, product.data.data.data.discount)}
+                </p>
+              </div>
+              <button className={styles.button}>Заказать</button>
+            </div>
+          </div>
+        )}
+        </div>
+    </div>
   )
 }
 

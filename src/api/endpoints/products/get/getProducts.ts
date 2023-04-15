@@ -7,17 +7,19 @@ import requestsApi from '../config';
 interface RequestItemReponse {
   id: number;
   name: string;
-  content: string;
+  text: string;
   price: number;
-  discount_percent: number;
-  image_url: string;
+  discount: number;
+  preview_image: string;
 }
 
 type RequestsItemsResponse = {
   data: RequestItemReponse[];
 };
 
-interface GetByIdRequestResponse extends RequestsItemsResponse {}
+interface GetByIdRequestResponse {
+  data: RequestItemReponse;
+}
 
 interface GetAllRequestsResponse extends RequestsItemsResponse {}
 
@@ -30,19 +32,17 @@ const getRequests = Object.freeze({
     return requestsApi.get('');
   },
   getById({ id }: IGetByIdRequestsParams): Promise<Response<GetByIdRequestResponse>> {
-    console.log(id)
-    const params = new URLSearchParams();
-    return requestsApi.get('/', );
+    return requestsApi.get(`/${id}`);
   },
 });
 
-export const useGetRequests = () => {
+export const useGetProducts = () => {
   return useAppQuery<Response<GetAllRequestsResponse>, RequestApiError>(
     ['all_requests'],
     getRequests.getAll,
   );
 };
 
-export const useGetRequestsById = ({ id }: IGetByIdRequestsParams) => {
+export const useGetProductsById = ({ id }: IGetByIdRequestsParams) => {
   return useAppQuery<Response<GetByIdRequestResponse>, RequestApiError>(['resquests_by_id'], () => getRequests.getById({id}));
 };
